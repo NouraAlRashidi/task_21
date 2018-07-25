@@ -12,6 +12,23 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['name', 'description', 'price',]
 
+
+class RegisterSerializer (serializers.ModelSerializer):
+    password = serializers.CharField(write_only = True, style = {'input_type': 'password'})
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def create (self, validated_data):
+        my_username = validated_data['username']
+        my_passowrd = validated_data['password']
+        new_user = User (username = my_username)
+        new_user.set_password(my_passowrd)
+        new_user.save()
+        return validated_data
+
+
+
 class RestaurantListSerializer(serializers.ModelSerializer):
     detail = serializers.HyperlinkedIdentityField(
         view_name = "api-detail",
